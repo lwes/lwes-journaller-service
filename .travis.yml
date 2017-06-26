@@ -1,17 +1,17 @@
 language: c
 before_script: ./bootstrap
 
-#before_deploy:
-#  - "make dist"
-#  - export RELEASE_FILE=$(ls lwes-*.tar.gz)
-#
-#deploy:
-#  provider: releases
-#  api_key:
-#    secure:
-#  skip_cleanup: true
-#  file:
-#    - "${RELEASE_FILE}"
-#  on:
-#    repo: lwes/lwes-journaller-service
-#    tags: true
+before_deploy:
+  - "rm -f lwes-journaller-service-*.tar.gz"
+  - "make dist"
+  - export RELEASE_FILE=$(ls lwes-journaller-service-*.tar.gz)
+
+deploy:
+  provider: releases
+  api_key:
+    secure: rXxBZFNqqaJEXSj4WUQq6l1BCOpNdBGLoOn1aTQeECaVdihNv/LDdycB5ISx6AzGVVw7Wk/MNUPQ0daBSI0+48wRk2Gp1pY8JgO6GjhXxOVFke8IqoxmNZ0niLnnQPdhwcLtKqBFG4hCJ2YBf4X0okxWYUgtzARR1WBsqDZNFn3yoBJdHZKN9Wh36CemzvC7Ci7uVbKGqHNdt473oXBHesy5J2DhtUC9l4p1LnB8qg+fEpNx7JEVFdta/Y8rJ/nOX9zT8j91ErSWF06LM4W9ZwhfcFQykhT2/BjjQnoCP0Fl4PPSo8g26C/+O6H9Z0hPorhFoh2afg3Io99ZG10/BQrYAbOXa/AcEwa/nVtp4B7a29BT8yquKtS3XgREXufuODacr7EdrSeBzN7NcT3lq0I4ft3UqUBOTCOf4liDmVK4KoLrWYfwhCBRJKGsr7BF1yulrXzrmfjVv2b1cWsmsIVMn3sdkS2T3qxaz6w760hwkDNzBFVOoEfm7Ct2QhQfu3KvzOJnPSTJ1PV7QZWQ7dC1HeWVC0wusoZ88Ki1FXsrdgxKutEsgysxmJ4CYogQxXtozOuB+l9pIdRf1oSj+sM0pu0AQSK1zgH4R+P/Dt5TZ9EyTaXnnplk20Kl2v+NQocqtbtaZ62yeVf3HthSuT5hoafOE4Caj+4qcgYI7bQ=
+  skip_cleanup: true
+  file:
+    - "${RELEASE_FILE}"
+  on:
+    repo: lwes/lwes-journaller-service
