@@ -1,0 +1,17 @@
+language: c
+before_script: ./bootstrap
+
+#before_deploy:
+#  - "make dist"
+#  - export RELEASE_FILE=$(ls lwes-*.tar.gz)
+#
+#deploy:
+#  provider: releases
+#  api_key:
+#    secure:
+#  skip_cleanup: true
+#  file:
+#    - "${RELEASE_FILE}"
+#  on:
+#    repo: lwes/lwes-journaller-service
+#    tags: true
