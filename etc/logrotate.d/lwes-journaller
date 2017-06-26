@@ -1,0 +1,9 @@
+/var/log/lwes-journaller/lwes-journaller.log {
+    missingok
+    notifempty
+    sharedscripts
+    dateext
+    postrotate
+      /etc/rc.d/init.d/lwes-journaller rotatelogs 2>&1 >/dev/null || true
+    endscript
+}

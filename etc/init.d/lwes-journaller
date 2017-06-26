@@ -1,0 +1,100 @@
+#!/bin/bash
+#
+# lwes-journaller        Startup script for the LWES Event Journaller
+#
+# chkconfig: - 98 2
+# description: LWES is the LightWeight Event System.  The LWES Journaller records incoming LWES messages into large compressed journals.
+# processname: lwes-journaller
+# config: /etc/lwes-journaller.config
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Start lwes-journaller in the UTC time zone.
+TZ=UTC
+export TZ
+
+# Start lwes-journaller in the C locale by default.
+LANG=C
+export LANG
+
+# Load the lwes-journaller configuration.
+if [ -f /etc/lwes-journaller.config ]; then
+. /etc/lwes-journaller.config
+fi
+
+prog=${PROG-/usr/bin/lwes-journaller}
+pidfile=/var/lock/lwes-journaller
+
+check_config() {
+    [ "x$PORT" = "x" ] && echo "WARNING: incomplete/missing configuration; no PORT specified"
+}
+
+start() {
+  check_config
+  echo -n $"Starting $prog: "
+  daemon --pidfile ${pidfile} $prog -p $PORT --pid-file ${pidfile} $OPTIONS
+  RETVAL=$?
+  echo
+}
+
+stop() {
+  check_config
+  echo -n $"Stopping $prog: "
+  killproc -p ${pidfile} -d 10 $prog
+  RETVAL=$?
+  echo
+}
+
+gracefulstop() {
+  check_config
+  echo -n $"Gracefully stopping $prog: "
+  killproc -p ${pidfile} -d 10 $prog -QUIT
+  RETVAL=$?
+  echo
+}
+
+rotate() {
+  check_config
+  echo -n $"Causing $prog to rotate journals: "
+  killproc -p ${pidfile} $prog -HUP
+  RETVAL=$?
+  echo
+}
+
+rotatelogs() {
+  check_config
+  echo -n $"Causing $prog to rotate logs: "
+  killproc -p ${pidfile} $prog -USR1
+  RETVAL=$?
+  echo
+}
+
+# See how we were called.
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status $prog
+    RETVAL=$?
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  rotate)
+    rotate
+    ;;
+  rotatelogs)
+    rotatelogs
+    ;;
+  *)
+    echo $"Usage: $prog {start|stop|restart|gracefulstop|rotate|rotatelogs|status|help}"
+    exit 1
+esac
+
+exit $RETVAL

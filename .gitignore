@@ -14,7 +14,6 @@ doxygen.config
 install-sh
 libtool
 ltmain.sh
-lwes-*
 missing
 pkgconfig-template.pc
 test-driver
