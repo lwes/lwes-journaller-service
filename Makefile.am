@@ -13,3 +13,5 @@ etclogrotate_DATA=etc/logrotate.d/lwes-journaller
 MAINTAINERCLEANFILES = COPYING INSTALL missing install-sh aclocal.m4 Makefile.in configure *.gz
 
 EXTRA_DIST = etc
+
+test:
