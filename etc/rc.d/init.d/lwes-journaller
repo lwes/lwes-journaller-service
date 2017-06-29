@@ -1,0 +1,183 @@
+#!/bin/bash
+#
+# lwes-journaller        Startup script for the LWES Event Journaller
+#
+# chkconfig: - 98 2
+# description: LWES is the LightWeight Event System.  The LWES Journaller records incoming LWES messages into large compressed journals.
+# processname: lwes-journaller
+# config: /etc/sysconfig/lwes-journaller
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Start lwes-journaller in the UTC time zone.
+TZ=UTC
+export TZ
+
+# Start lwes-journaller in the C locale by default.
+LANG=C
+export LANG
+
+# Load the lwes-journaller configuration.
+if [ -f /etc/sysconfig/lwes-journaller ]; then
+. /etc/sysconfig/lwes-journaller
+fi
+
+prog=${PROG-/usr/bin/lwes-journaller}
+pidfile=/var/lock/lwes-journaller
+gotpidfile=
+gotport=
+nodaemonize=
+
+# some options might be specified which are normally controlled
+# by this script, so when we encounter those keep track of the
+# values so we can use those
+process_options() {
+  while [ "$1" != "" ] ; do
+    case $1 in
+      --port|-p)
+        gotport=1
+        shift 2
+        ;;
+      --port=?*)
+        gotport=1
+        shift
+        ;;
+      -p=?*)
+        gotport=1
+        shift
+        ;;
+      --pid-file)
+        pidfile=$2
+        gotpidfile=1
+        shift 2
+        ;;
+      --pid-file=?*)
+        pidfile=${1#--pid-file=}
+        gotpidfile=1
+        shift
+        ;;
+      --nodaemonize)
+        nodaemonize=1
+        shift
+        ;;
+      *)
+        shift
+        ;;
+    esac
+  done
+}
+
+check_config() {
+  [ $gotport ] || echo "WARNING: incomplete/missing configuration; no PORT specified"
+}
+
+start() {
+  check_config
+  # if supervisord seems to be running and includes the journaller, then
+  if supervisorctl avail | grep 'lwes-journaller' > /dev/null ; then
+    # delegate to supervisorctl
+    exec /usr/bin/supervisorctl start lwes-journaller
+  else
+    # otherwise use the standard startup
+    echo -n $"Starting $prog: "
+    daemon --pidfile=${pidfile} $prog $OPTIONS
+    RETVAL=$?
+    echo
+  fi
+}
+
+stop() {
+  check_config
+  # if supervisord seems to be running and includes the journaller, then
+  if supervisorctl avail | grep 'lwes-journaller' > /dev/null ; then
+    # delegate to supervisorctl
+    exec /usr/bin/supervisorctl stop lwes-journaller
+  else
+    # otherwise use the standard shutdown
+    echo -n $"Stopping $prog: "
+    killproc -p ${pidfile} -d 10 $prog
+    RETVAL=$?
+    echo
+  fi
+}
+
+restart() {
+  # if supervisord seems to be running and includes the journaller, then
+  if supervisorctl avail | grep 'lwes-journaller' > /dev/null ; then
+    # delegate to supervisorctl
+    exec /usr/bin/supervisorctl restart lwes-journaller
+  else
+    stop
+    start
+  fi
+}
+
+foreground() {
+  check_config
+  exec $prog --nodaemonize $OPTIONS
+}
+
+gracefulstop() {
+  check_config
+  echo -n $"Gracefully stopping $prog: "
+  killproc -p ${pidfile} -d 10 $prog -QUIT
+  RETVAL=$?
+  echo
+}
+
+rotate() {
+  check_config
+  echo -n $"Causing $prog to rotate journals: "
+  killproc -p ${pidfile} $prog -HUP
+  RETVAL=$?
+  echo
+}
+
+rotatelogs() {
+  check_config
+  echo -n $"Causing $prog to rotate logs: "
+  killproc -p ${pidfile} $prog -USR1
+  RETVAL=$?
+  echo
+}
+
+process_options $OPTIONS
+# don't allow daemonize in OPTIONS, we'll add it if need be
+if [ $nodaemonize ] ; then
+  OPTIONS=${OPTIONS/--nodaemonize/}
+fi
+if [ ! $gotpidfile ] ; then
+  OPTIONS="--pid-file=$pidfile $OPTIONS"
+fi
+
+# See how we were called.
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status $prog
+    RETVAL=$?
+    ;;
+  restart)
+    restart
+    ;;
+  rotate)
+    rotate
+    ;;
+  rotatelogs)
+    rotatelogs
+    ;;
+  foreground)
+    foreground
+    ;;
+  *)
+    echo $"Usage: $prog {start|stop|restart|gracefulstop|rotate|rotatelogs|status|foreground|help}"
+    exit 1
+esac
+
+exit $RETVAL

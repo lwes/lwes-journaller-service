@@ -1,0 +1,3 @@
+Verison 1.0.0 (anthonym)
+* allow the service to be run under supervisord
+* move system config to live in /etc/sysconfig/lwes-journaller

@@ -18,6 +18,7 @@ model=thread
 MONDEMAND_CONFIG=/etc/mondemand/mondemand.conf
 MONDEMAND_ADDR=127.0.0.1
 MONDEMAND_PORT=11111
+MONDEMAND_TTL=10
 if [ -f $MONDEMAND_CONFIG ] ;
 then
   source $MONDEMAND_CONFIG
@@ -27,12 +28,8 @@ fi
 # The following are actually used by the journaller init script, or the
 # system scripts
 # -----------------------------------------------------------------------
-
 # allow core files
 DAEMON_COREFILE_LIMIT='unlimited'
 
 # options for journaller
-OPTIONS="--address 172.0.0.1 -R --log-level 15 --log-file=/var/log/lwes-journaller/lwes-journaller.log --user=journaller --thread-type=$model --mondemand-ip=$MONDEMAND_ADDR --mondemand-port=$MONDEMAND_PORT /var/lib/lwes-journaller/journals/outbound/all_events.log.gz"
-
-# port for journaller
-PORT=22222
+OPTIONS="--address=172.0.0.1 --port=22222 --real-time --log-level=15 --log-file=/var/log/lwes-journaller/lwes-journaller.log --user=journaller --thread-type=$model --mondemand-ip=$MONDEMAND_ADDR --mondemand-port=$MONDEMAND_PORT --mondemand-ttl=$MONDEMAND_TTL /var/lib/lwes-journaller/journals/outbound/all_events.log.gz"
