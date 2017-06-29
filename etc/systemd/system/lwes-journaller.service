@@ -1,0 +1,11 @@
+[Unit]
+Description=LWES Journaller
+After=crond.service
+
+[Service]
+EnvironmentFile=/etc/sysconfig/lwes-journaller
+ExecStart=/etc/rc.d/init.d/lwes-journaller foreground
+Type=simple
+
+[Install]
+WantedBy=default.target

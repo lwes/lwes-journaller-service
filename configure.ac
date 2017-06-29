@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([lwes-journaller-service], [1.0.0], [anthonym@alumni.caltech.edu])
+AC_INIT([lwes-journaller-service], [1.1.0], [anthonym@alumni.caltech.edu])
 
 AM_INIT_AUTOMAKE([foreign])
 

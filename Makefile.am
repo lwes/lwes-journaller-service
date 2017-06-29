@@ -13,6 +13,9 @@ etclogrotate_DATA=etc/logrotate.d/lwes-journaller
 etcsupervisorddir=/etc/supervisord.d
 etcsupervisord_DATA=etc/supervisord.d/lwes-journaller.ini
 
+etcsystemddir=/etc/systemd/system
+etcsystemd_DATA=etc/systemd/system/lwes-journaller.service
+
 MAINTAINERCLEANFILES = COPYING INSTALL missing install-sh aclocal.m4 Makefile.in configure *.gz
 
 EXTRA_DIST = etc
