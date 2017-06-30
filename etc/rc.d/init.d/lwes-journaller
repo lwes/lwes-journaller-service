@@ -75,7 +75,8 @@ check_config() {
 start() {
   check_config
   # if supervisord seems to be running and includes the journaller, then
-  if supervisorctl avail | grep 'lwes-journaller' > /dev/null ; then
+  if which supervisorctl >/dev/null 2>&1 && \
+     supervisorctl avail | grep 'lwes-journaller' > /dev/null ; then
     # delegate to supervisorctl
     exec /usr/bin/supervisorctl start lwes-journaller
   else
@@ -90,7 +91,8 @@ start() {
 stop() {
   check_config
   # if supervisord seems to be running and includes the journaller, then
-  if supervisorctl avail | grep 'lwes-journaller' > /dev/null ; then
+  if which supervisorctl >/dev/null 2>&1 && \
+     supervisorctl avail | grep 'lwes-journaller' > /dev/null ; then
     # delegate to supervisorctl
     exec /usr/bin/supervisorctl stop lwes-journaller
   else
@@ -104,7 +106,8 @@ stop() {
 
 restart() {
   # if supervisord seems to be running and includes the journaller, then
-  if supervisorctl avail | grep 'lwes-journaller' > /dev/null ; then
+  if which supervisorctl >/dev/null 2>&1 && \
+     supervisorctl avail | grep 'lwes-journaller' > /dev/null ; then
     # delegate to supervisorctl
     exec /usr/bin/supervisorctl restart lwes-journaller
   else
