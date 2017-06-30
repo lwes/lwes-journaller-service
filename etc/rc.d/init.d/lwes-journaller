@@ -28,6 +28,7 @@ pidfile=/var/lock/lwes-journaller
 gotpidfile=
 gotport=
 nodaemonize=
+internalrotation=
 
 # some options might be specified which are normally controlled
 # by this script, so when we encounter those keep track of the
@@ -40,10 +41,6 @@ process_options() {
         shift 2
         ;;
       --port=?*)
-        gotport=1
-        shift
-        ;;
-      -p=?*)
         gotport=1
         shift
         ;;
@@ -60,6 +57,14 @@ process_options() {
       --nodaemonize)
         nodaemonize=1
         shift
+        ;;
+      --journal-rotate-interval|-i)
+        internalrotation=1
+        shift
+        ;;
+      --journal-rotate-interval=?*)
+        internalrotation=1
+        shift 2
         ;;
       *)
         shift
@@ -131,10 +136,12 @@ gracefulstop() {
 
 rotate() {
   check_config
-  echo -n $"Causing $prog to rotate journals: "
-  killproc -p ${pidfile} $prog -HUP
-  RETVAL=$?
-  echo
+  if [ ! $internalrotation ] ; then
+    echo -n $"Causing $prog to rotate journals: "
+    killproc -p ${pidfile} $prog -HUP
+    RETVAL=$?
+    echo
+  fi
 }
 
 rotatelogs() {
