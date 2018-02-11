@@ -32,4 +32,4 @@ fi
 DAEMON_COREFILE_LIMIT='unlimited'
 
 # options for journaller
-OPTIONS="--address=172.0.0.1 --port=22222 --real-time --log-level=15 --log-file=/var/log/lwes-journaller/lwes-journaller.log --user=journaller --thread-type=$model --mondemand-ip=$MONDEMAND_ADDR --mondemand-port=$MONDEMAND_PORT --mondemand-ttl=$MONDEMAND_TTL /var/lib/lwes-journaller/journals/outbound/all_events.log.gz"
+OPTIONS="--address=127.0.0.1 --port=22222 --real-time --log-level=15 --log-file=/var/log/lwes-journaller/lwes-journaller.log --user=journaller --thread-type=$model --mondemand-ip=$MONDEMAND_ADDR --mondemand-port=$MONDEMAND_PORT --mondemand-ttl=$MONDEMAND_TTL /var/lib/lwes-journaller/journals/outbound/all_events.log.gz"

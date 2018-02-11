@@ -1,3 +1,6 @@
+Version 1.1.1 (anthonym)
+* fix default ip addresss
+
 Version 1.1.0 (anthonym)
 * allow the service to be run under systemd
 
